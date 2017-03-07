@@ -10,6 +10,7 @@ t.crawl_jobs
 For example-
 
 Headless.ly do
+
   r = RequestManager.new(nil, [0, 0], 1)
   
   t = TSJobCrawler.new(nil, r, nil)
