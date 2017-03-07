@@ -5,6 +5,7 @@ require 'cgi'
 require 'json'
 require 'requestmanager'
 require 'headless'
+require 'harvesterreporter'
 
 load 'crawlers/clearancejobscom/clearance_jobs_com_parser.rb'
 load 'crawlers/util/failure_handler.rb'
@@ -15,11 +16,9 @@ class ClearanceJobsComCrawler
     @search_term = search_term
     @requests = requests
     @base_url = set_base_url
-    @output = Array.new
 
     # Handle crawler manager info
-    @cm_url = cm_hash[:crawler_manager_url] if cm_hash
-    @selector_id = cm_hash[:selector_id] if cm_hash
+    @reporter = HarvesterReporter.new(cm_hash)
   end
 
   # Run the crawler
@@ -78,36 +77,11 @@ class ClearanceJobsComCrawler
       found_listings.push(parsed_listing) if parsed_listing
     end
 
-    report_results(found_listings, listings.first)
-  end
-
-  # Figure out how to report results
-  def report_results(results, link)
-    if @cm_url
-      report_incremental(results, link)
-    else
-      report_batch(results)
-    end
-  end
-
-  # Report all results in one JSON
-  def report_batch(results)
-    results.each do |result|
-      @output.push(result)
-    end
-  end
-
-  # Report results back to Harvester incrementally
-  def report_incremental(results, link)
-    curl_url = @cm_url+"/relay_results"
-    c = Curl::Easy.http_post(curl_url,
-                             Curl::PostField.content('selector_id', @selector_id),
-                             Curl::PostField.content('status_message', "Collected " + link),
-                             Curl::PostField.content('results', JSON.pretty_generate(results)))
+    @reporter.report_results(found_listings, listing_links.first)
   end
 
   def gen_json
-    return JSON.pretty_generate(@output)
+    return @reporter.gen_json
   end
 end
 

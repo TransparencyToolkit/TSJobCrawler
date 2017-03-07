@@ -6,8 +6,9 @@ load 'crawlers/util/failure_handler.rb'
 
 class ClearanceJobsComParser
   include FailureHandler
-  def initialize(url, page)
+  def initialize(url, page, requests=nil)
     @url = url
+    @requests = requests
     @i = 0
     @html = page
     @page = Nokogiri::HTML.parse(page)

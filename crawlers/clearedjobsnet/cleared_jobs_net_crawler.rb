@@ -3,6 +3,7 @@ require 'open-uri'
 require 'cgi'
 require 'json'
 require 'requestmanager'
+require 'harvesterreporter'
 
 load 'crawlers/clearedjobsnet/cleared_jobs_net_parser.rb'
 load 'crawlers/util/failure_handler.rb'
@@ -15,8 +16,7 @@ class ClearedJobsNetCrawler
     @requests = requests
 
     # Handle crawler manager info
-    @cm_url = cm_hash[:crawler_manager_url] if cm_hash
-    @selector_id = cm_hash[:selector_id] if cm_hash
+    @reporter = HarvesterReporter.new(cm_hash)
     
     # Get all items
     if crawl_type == "all"
@@ -76,7 +76,7 @@ class ClearedJobsNetCrawler
       found_listings.push(parser.parse_job)
     end
 
-    report_results(found_listings, listing_links.first)
+    @reporter.report_results(found_listings, listing_links.first)
   end
 
   # Gets the number of pages for the query
@@ -134,33 +134,8 @@ class ClearedJobsNetCrawler
     end
   end
 
-  # Figure out how to report results
-  def report_results(results, link)
-    if @cm_url
-      report_incremental(results, link)
-    else
-      report_batch(results)
-    end
-  end
-
-  # Report all results in one JSON
-  def report_batch(results)
-    results.each do |result|
-      @output.push(result)
-    end
-  end
-
-  # Report results back to Harvester incrementally
-  def report_incremental(results, link)
-    curl_url = @cm_url+"/relay_results"
-    c = Curl::Easy.http_post(curl_url,
-                             Curl::PostField.content('selector_id', @selector_id),
-                             Curl::PostField.content('status_message', "Collected " + link),
-                             Curl::PostField.content('results', JSON.pretty_generate(results)))
-  end
-
   # Return JSON
   def gen_json
-    JSON.pretty_generate(@output)
+    return @reporter.gen_json
   end
 end
