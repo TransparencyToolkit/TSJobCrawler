@@ -2,7 +2,7 @@ require 'nokogiri'
 require 'pry'
 require 'open-uri'
 
-load 'crawlers/util/failure_handler.rb'
+load 'util/failure_handler.rb'
 
 class ClearedJobsNetParser
   include FailureHandler
@@ -34,7 +34,7 @@ class ClearedJobsNetParser
       }
     rescue
       @i += 1
-      if i < 10
+      if @i < 10
         @html = Nokogiri::HTML.parse(get_retry(@url, @requests, @i))
         parse_job
       end

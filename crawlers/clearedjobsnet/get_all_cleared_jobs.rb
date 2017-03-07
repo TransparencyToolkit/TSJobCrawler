@@ -1,13 +1,14 @@
 require 'json'
 require 'headless'
 require 'requestmanager'
-load 'crawlers/clearedjobsnet/cleared_jobs_net_crawler.rb'
+load 'clearedjobsnet/cleared_jobs_net_crawler.rb'
 
 # Get as many jobs as possible
 class GetAllClearedJobs
-  def initialize(requests)
+  def initialize(requests, cm_hash)
     @output = Array.new
     @requests = requests
+    @cm_hash
   end
 
   # Crawl through many options
@@ -26,25 +27,25 @@ class GetAllClearedJobs
 
   # Crawl by security clearance
   def get_by_clearance
-    clearance_levels = JSON.parse(File.read("crawlers/clearedjobsnet/terms/clearance_levels.json"))
+    clearance_levels = JSON.parse(File.read("clearedjobsnet/terms/clearance_levels.json"))
     crawl_each(clearance_levels, "security_clearance")
   end
 
   # Crawl each country
   def get_by_country
-    country_names = JSON.parse(File.read("crawlers/clearedjobsnet/terms/country_names.json"))
+    country_names = JSON.parse(File.read("clearedjobsnet/terms/country_names.json"))
     crawl_each(country_names, "country")
   end
 
   # Crawl company pages
   def get_by_company
-    company_names = JSON.parse(File.read("crawlers/clearedjobsnet/terms/company_names.json"))
+    company_names = JSON.parse(File.read("clearedjobsnet/terms/company_names.json"))
     crawl_each(company_names, "company_page")
   end
 
   # Crawl search term list
   def get_by_searchterm
-    search_terms = JSON.parse(File.read("crawlers/clearedjobsnet/terms/search_terms.json"))
+    search_terms = JSON.parse(File.read("clearedjobsnet/terms/search_terms.json"))
     crawl_each(search_terms)
   end
 
@@ -58,7 +59,7 @@ class GetAllClearedJobs
 
   # Start the crawler
   def start_crawler(search_term, filter=nil)
-    c = ClearedJobsNetCrawler.new(search_term, filter, @requests)
+    c = ClearedJobsNetCrawler.new(search_term, filter, @requests, @cm_hash)
     c.crawl_listings
     save_listings(c.gen_json)
   end
@@ -74,9 +75,3 @@ class GetAllClearedJobs
   end
 end
 
-Headless.ly do
-  r = RequestManager.new(nil, [0, 0], 1)
-  g = GetAllClearedJobs.new(r)
-  g.crawl
-  File.write("clearedjobsnet_all.json", g.gen_json)
-end

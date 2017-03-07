@@ -7,8 +7,8 @@ require 'requestmanager'
 require 'headless'
 require 'harvesterreporter'
 
-load 'crawlers/clearancejobscom/clearance_jobs_com_parser.rb'
-load 'crawlers/util/failure_handler.rb'
+load 'clearancejobscom/clearance_jobs_com_parser.rb'
+load 'util/failure_handler.rb'
 
 class ClearanceJobsComCrawler
   include FailureHandler
@@ -77,21 +77,10 @@ class ClearanceJobsComCrawler
       found_listings.push(parsed_listing) if parsed_listing
     end
 
-    @reporter.report_results(found_listings, listing_links.first)
+    @reporter.report_results(found_listings, listings.first)
   end
 
   def gen_json
     return @reporter.gen_json
   end
 end
-
-#Headless.ly do
-#  r = RequestManager.new(nil, [0, 0], 1)
-#  c = ClearanceJobsComCrawler.new("osint", r)
-#  c.crawl
-#  File.write("clearancejobscom_test.json", c.gen_json)
-#end
-
-c = ClearanceJobsComCrawler.new(nil)
-c.crawl
-File.write("clearancejobscom_data.json", c.gen_json)

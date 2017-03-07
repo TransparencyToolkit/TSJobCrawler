@@ -5,8 +5,8 @@ require 'json'
 require 'requestmanager'
 require 'harvesterreporter'
 
-load 'crawlers/clearedjobsnet/cleared_jobs_net_parser.rb'
-load 'crawlers/util/failure_handler.rb'
+load 'clearedjobsnet/cleared_jobs_net_parser.rb'
+load 'util/failure_handler.rb'
 
 class ClearedJobsNetCrawler
   include FailureHandler
@@ -59,11 +59,11 @@ class ClearedJobsNetCrawler
     
     # Parse URL and date from each row
     parsed_result_rows = result_rows.map do |r|
-      link = @base_url+r.css("a")[0]['href']
+      link = (@base_url+r.css("a")[0]['href']).split("/keywords")[0]
       date = Date.parse(r.css("div").select{|e| e.text.include?("Posted - ")}.first.text.gsub("Posted - ", ""))
       {url: link, posting_date: date}
     end
-
+    
     parse_all_listings(parsed_result_rows)
     return parsed_result_rows
   end

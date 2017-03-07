@@ -39,11 +39,14 @@ class SecurityClearedJobsComCrawler
   # Get the total pagecount
   def get_total_pagecount
     initial_page = Nokogiri::HTML.parse(load_next_page(1))
-    last_page_link = initial_page.css(".paginator__item").last.css("a")[0]['href']
+    navbar = initial_page.css(".paginator__item").last
+    last_page_link = navbar.css("a")[0]['href'] if navbar
 
     # Handle case of there just being one page
-    page_count = last_page_link.split("&Page=")[1].to_i
-    page_count == 0 ? (return 1) : (return page_count)
+    if last_page_link
+      page_count = last_page_link.split("&Page=")[1].to_i
+      page_count == 0 ? (return 1) : (return page_count)
+    end
   end
 
   # Load the next page
@@ -77,7 +80,7 @@ class SecurityClearedJobsComCrawler
     total_pagecount = get_total_pagecount
     
     # Load each page
-    (1..total_pagecount).each do |page_num|
+    (1..total_pagecount.to_i).each do |page_num|
       next_page = load_next_page(page_num)
       parse_listings(next_page)
     end
@@ -89,10 +92,3 @@ class SecurityClearedJobsComCrawler
   end
 end
 
-
-Headless.ly do
-  r = RequestManager.new(nil, [0, 0], 1)
-  c = SecurityClearedJobsComCrawler.new("ruby", nil, nil)
-  c.crawl
-  File.write("securityclearedjobscom_test.json", c.gen_json)
-end

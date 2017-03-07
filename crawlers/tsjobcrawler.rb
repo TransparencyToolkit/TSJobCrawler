@@ -1,5 +1,8 @@
 require 'json'
 load 'securityclearedjobscom/security_cleared_jobs_com_crawler.rb'
+load 'clearancejobscom/clearance_jobs_com_crawler.rb'
+load 'clearedjobsnet/cleared_jobs_net_crawler.rb'
+load 'clearedjobsnet/get_all_cleared_jobs.rb'
 
 # Crawls all the jobs that require clearance
 class TSJobCrawler
@@ -13,6 +16,8 @@ class TSJobCrawler
   # Crawl all of the listing sites
   def crawl_jobs
     security_cleared_jobs_com
+    clearance_jobs_com
+    cleared_jobs_net
   end
 
   def security_cleared_jobs_com
@@ -21,35 +26,27 @@ class TSJobCrawler
     @output += JSON.parse(c.gen_json) if @cm_hash == nil
   end
 
+  def clearance_jobs_com
+    c = ClearanceJobsComCrawler.new(@search_term, @requests, @cm_hash)
+    c.crawl
+    @output += JSON.parse(c.gen_json) if @cm_hash == nil
+  end
+
+  def cleared_jobs_net
+    if @search_term == nil
+      g = GetAllClearedJobs.new(@requests, @cm_hash)
+      g.crawl
+      @output += JSON.parse(g.gen_json) if @cm_hash == nil
+    else # Scrape by search term
+      c = ClearedJobsNetCrawler.new(@search_term, nil, @requests, @cm_hash)
+      c.crawl_listings
+      @output += JSON.parse(c.gen_json) if @cm_hash == nil
+    end
+  end
+
   # Generate output
   def gen_json
     JSON.pretty_generate(@output)
   end
-
-  # Call security cleared jobs
-    # Write call
-    # Remove hardcoded call
-    # Update paths
-
-  # Call clearedjobs.net
-    # Determine if it should be called directly or through get all
-    # Update get_all to not save in JSON when called from Harvester
-    # Remove hardcoded and update paths
-
-  # Call clearancejobs.cm
-    # Write call
-    # Remove hardcoded and update paths
-  
-  # All:
-    # Collect JSONS here/maybe write to disk
 end
 
-Headless.ly do
-  t = TSJobCrawler.new("ruby", nil, nil)
-  t.crawl_jobs
-  t.gen_json
-#  r = RequestManager.new(nil, [0, 0], 1)
-#  c = SecurityClearedJobsComCrawler.new("ruby", nil, nil)
-#  c.crawl
-#  File.write("securityclearedjobscom_test.json", c.gen_json)
-end

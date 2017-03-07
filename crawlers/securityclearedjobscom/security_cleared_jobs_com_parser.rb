@@ -35,7 +35,7 @@ class SecurityClearedJobsComParser
       }
     rescue
       @i += 1
-      if i < 10
+      if @i < 10
         @html = Nokogiri::HTML.parse(get_retry(@url, @requests, @i))
         parse
       end
