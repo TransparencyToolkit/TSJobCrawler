@@ -8,8 +8,8 @@ require 'requestmanager'
 require 'headless'
 require 'harvesterreporter'
 
-load 'crawlers/securityclearedjobscom/security_cleared_jobs_com_parser.rb'
-load 'crawlers/util/failure_handler.rb'
+load 'securityclearedjobscom/security_cleared_jobs_com_parser.rb'
+load 'util/failure_handler.rb'
 
 class SecurityClearedJobsComCrawler
   include FailureHandler

@@ -2,7 +2,7 @@ require 'nokogiri'
 require 'open-uri'
 require 'pry'
 
-load 'crawlers/util/failure_handler.rb'
+load 'util/failure_handler.rb'
 
 class SecurityClearedJobsComParser
   include FailureHandler
