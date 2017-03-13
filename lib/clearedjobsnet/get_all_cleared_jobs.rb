@@ -8,7 +8,7 @@ class GetAllClearedJobs
   def initialize(requests, cm_hash)
     @output = Array.new
     @requests = requests
-    @cm_hash
+    @cm_hash = cm_hash
   end
 
   # Crawl through many options
