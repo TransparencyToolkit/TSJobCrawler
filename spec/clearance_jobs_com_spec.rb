@@ -1,7 +1,7 @@
 require 'pry'
 require 'open-uri'
-load 'crawlers/clearancejobscom/clearance_jobs_com_crawler.rb'
-load 'crawlers/clearancejobscom/clearance_jobs_com_parser.rb'
+load 'lib/clearancejobscom/clearance_jobs_com_crawler.rb'
+load 'lib/clearancejobscom/clearance_jobs_com_parser.rb'
 
 RSpec.describe ClearanceJobsComCrawler do
   describe "initialization" do

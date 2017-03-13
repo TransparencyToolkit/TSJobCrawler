@@ -1,6 +1,6 @@
 require 'pry'
-load 'crawlers/clearedjobsnet/cleared_jobs_net_crawler.rb'
-load 'crawlers/clearedjobsnet/cleared_jobs_net_parser.rb'
+load 'lib/clearedjobsnet/cleared_jobs_net_crawler.rb'
+load 'lib/clearedjobsnet/cleared_jobs_net_parser.rb'
 
 RSpec.describe ClearedJobsNetCrawler do
   describe "initialization" do

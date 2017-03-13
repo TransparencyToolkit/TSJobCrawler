@@ -2,8 +2,8 @@
 require 'pry'
 require 'open-uri'
 require 'nokogiri'
-load 'crawlers/securityclearedjobscom/security_cleared_jobs_com_crawler.rb'
-load 'crawlers/securityclearedjobscom/security_cleared_jobs_com_parser.rb'
+load 'lib/securityclearedjobscom/security_cleared_jobs_com_crawler.rb'
+load 'lib/securityclearedjobscom/security_cleared_jobs_com_parser.rb'
 
 RSpec.describe SecurityClearedJobsComCrawler do
   describe "initialization" do
