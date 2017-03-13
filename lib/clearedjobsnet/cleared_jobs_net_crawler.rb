@@ -1,9 +1,9 @@
-require 'nokogiri'
+#require 'nokogiri'
 require 'open-uri'
 require 'cgi'
 require 'json'
-require 'requestmanager'
-require 'harvesterreporter'
+#require 'requestmanager'
+#require 'harvesterreporter'
 
 load 'clearedjobsnet/cleared_jobs_net_parser.rb'
 load 'util/failure_handler.rb'
