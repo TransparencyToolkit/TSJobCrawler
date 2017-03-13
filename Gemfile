@@ -1,11 +1,5 @@
 source 'https://rubygems.org'
 gemspec
-gem "rake"
-gem "nokogiri"
-gem "requestmanager"
-gem "harvesterreporter"
-gem "pry"
-gem "headless"
 
 group :test do
   gem "simplecov"

@@ -1,6 +1,6 @@
-#require 'pry'
+require 'pry'
 require 'open-uri'
-#require 'nokogiri'
+require 'nokogiri'
 
 load 'util/failure_handler.rb'
 
