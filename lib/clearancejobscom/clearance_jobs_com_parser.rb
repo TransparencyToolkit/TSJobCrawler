@@ -32,7 +32,6 @@ class ClearanceJobsComParser
         required_experience: required_experience,
         employment_status: employment_status,
         required_clearance: required_clearance,
-        required_experience: required_experience,
         work_environment: work_environment,
         posting_date: posting_date,
         html: @html
