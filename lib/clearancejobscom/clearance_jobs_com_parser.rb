@@ -39,7 +39,8 @@ class ClearanceJobsComParser
     rescue
       @i += 1
       if @i < 10
-        @html = Nokogiri::HTML.parse(get_retry(@url, @requests, @i))
+        @html = get_retry(@url, @requests, @i)
+        @page = Nokogiri::HTML.parse(@html)
         parse
       end
     end

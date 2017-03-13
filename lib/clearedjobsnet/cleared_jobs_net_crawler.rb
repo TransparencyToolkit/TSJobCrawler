@@ -76,7 +76,7 @@ class ClearedJobsNetCrawler
       found_listings.push(parser.parse_job)
     end
 
-    @reporter.report_results(found_listings, listing_links.first)
+    @reporter.report_results(found_listings, listing_links.first[:url])
   end
 
   # Gets the number of pages for the query

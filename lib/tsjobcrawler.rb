@@ -15,8 +15,8 @@ class TSJobCrawler
 
   # Crawl all of the listing sites
   def crawl_jobs
-    cleared_jobs_net
     clearance_jobs_com
+    cleared_jobs_net
     security_cleared_jobs_com
   end
 

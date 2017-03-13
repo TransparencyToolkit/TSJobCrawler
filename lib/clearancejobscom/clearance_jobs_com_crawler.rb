@@ -24,7 +24,7 @@ class ClearanceJobsComCrawler
   # Run the crawler
   def crawl
     page_count = get_page_count
-
+    
     (1..page_count).each do |page_num|
       listing_links = collect_links_on_page(get_next_page(page_num))
       parse_listings(listing_links)
@@ -36,13 +36,17 @@ class ClearanceJobsComCrawler
     if @search_term == nil
       @base_url = "https://www.clearancejobs.com/jobs?"
     else
-      @base_url = "https://www.clearancejobs.com/jobs?keywords="+CGI.escape(@search_term)+"&zip_text="
+      @base_url = "https://www.clearancejobs.com/jobs?keywords="+CGI.escape(@search_term)
     end
   end
 
   # Get the URL for the next page
   def get_next_page_url(page_num)
-    return @base_url+"PAGE="+page_num.to_s+"&limit=25"
+    if @base_url.include?("keywords")
+      return @base_url+"&PAGE="+page_num.to_s+"&limit=25"
+    else
+      return @base_url+"PAGE="+page_num.to_s+"&limit=25"
+    end
   end
 
   # Get the page
