@@ -9,12 +9,13 @@ class GetAllClearedJobs
     @output = Array.new
     @requests = requests
     @cm_hash = cm_hash
+    @current_path = File.dirname(File.expand_path(__FILE__))
   end
 
   # Crawl through many options
   def crawl
-   get_first_1000
    get_by_clearance
+   get_first_1000
    get_by_country
    get_by_company
    get_by_searchterm
@@ -27,25 +28,25 @@ class GetAllClearedJobs
 
   # Crawl by security clearance
   def get_by_clearance
-    clearance_levels = JSON.parse(File.read("clearedjobsnet/terms/clearance_levels.json"))
+    clearance_levels = JSON.parse(File.read(@current_path+"/terms/clearance_levels.json"))
     crawl_each(clearance_levels, "security_clearance")
   end
 
   # Crawl each country
   def get_by_country
-    country_names = JSON.parse(File.read("clearedjobsnet/terms/country_names.json"))
+    country_names = JSON.parse(File.read(@current_path+"/terms/country_names.json"))
     crawl_each(country_names, "country")
   end
 
   # Crawl company pages
   def get_by_company
-    company_names = JSON.parse(File.read("clearedjobsnet/terms/company_names.json"))
+    company_names = JSON.parse(File.read(@current_path+"/terms/company_names.json"))
     crawl_each(company_names, "company_page")
   end
 
   # Crawl search term list
   def get_by_searchterm
-    search_terms = JSON.parse(File.read("clearedjobsnet/terms/search_terms.json"))
+    search_terms = JSON.parse(File.read(@current_path+"/terms/search_terms.json"))
     crawl_each(search_terms)
   end
 
