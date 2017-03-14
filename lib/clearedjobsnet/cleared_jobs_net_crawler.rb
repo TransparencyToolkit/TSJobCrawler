@@ -76,7 +76,9 @@ class ClearedJobsNetCrawler
       found_listings.push(parser.parse_job)
     end
 
-    @reporter.report_results(found_listings, listing_links.first[:url])
+    # Report results
+    listing_url = listing_links.first[:url] if !listing_links.empty?
+    @reporter.report_results(found_listings, listing_url)
   end
 
   # Gets the number of pages for the query
@@ -119,15 +121,20 @@ class ClearedJobsNetCrawler
     return get_page(url)
   end
 
+  # Escape the term in a way that works with the URL
+  def escape_term(term)
+    CGI.escape(term).gsub("%2F", "_/_")
+  end
+
   # Get the base query url depending on type
   def get_base_query_url
     if @crawl_type == "all"
       return @base_url+"search/action/advanced_search/zip_radius/20/keywords/+/city_state_zip/+/security_clearance/+/submit/SEARCH+JOBS/sort/time"
     elsif @crawl_type == "search"
-      encoded_term = CGI.escape(@search_term)
+      encoded_term = escape_term(@search_term)
       return @base_url+"search/action/advanced_search/zip_radius/20/keywords/"+encoded_term+"/city_state_zip/+/security_clearance/+/submit/SEARCH+JOBS"
     elsif @crawl_type == "filter"
-      encoded_term = CGI.escape(@search_term)
+      encoded_term = escape_term(@search_term)
       return @base_url+"search/action/advanced_search/keywords/+/"+@filter+"[]/"+encoded_term+"/zip/+/zip_radius/20"
     elsif @crawl_type == "company_page"
       return @base_url+"view-employer/employer_id_seo/"+@search_term
